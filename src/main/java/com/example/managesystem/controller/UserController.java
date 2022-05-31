@@ -11,6 +11,8 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.managesystem.common.Constants;
+import com.example.managesystem.common.Result;
 import com.example.managesystem.controller.dto.UserDTO;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,16 +39,29 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/user")
 public class UserController {
 
+
+
     @Resource
     private IUserService userService;
 
     @PostMapping("/login")
-    public boolean login(@RequestBody UserDTO user) {
+    public Result login(@RequestBody UserDTO user) {
         String username=user.getUsername();
         String password=user.getPassword();
         if(StrUtil.isBlank(username)|| StrUtil.isBlank(password))
-            return false;
-        return userService.login(user);
+            return Result.error(Constants.CODE_400,"Parameter error!");
+        UserDTO dto = userService.login(user);
+        return Result.success(dto);
+    }
+
+
+    @PostMapping("/register")
+    public Result register(@RequestBody UserDTO userDTO) {
+        String username=userDTO.getUsername();
+        String password=userDTO.getPassword();
+        if(StrUtil.isBlank(username)|| StrUtil.isBlank(password))
+            return Result.error(Constants.CODE_400,"Parameter error!");
+        return Result.success(userService.register(userDTO));
     }
 
     @PostMapping
@@ -67,6 +82,13 @@ public class UserController {
     @GetMapping
     public List<User> findAll() {
         return userService.list();
+    }
+
+    @GetMapping("/username/{username}")
+    public Result findOne(@PathVariable String username) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        return Result.success(userService.getOne(queryWrapper));
     }
 
     @GetMapping("/{id}")

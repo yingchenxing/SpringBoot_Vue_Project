@@ -1,12 +1,14 @@
 package com.example.managesystem.service;
 
+import com.example.managesystem.common.Result;
 import com.example.managesystem.controller.dto.UserDTO;
 import com.example.managesystem.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author YingChenxing
@@ -14,5 +16,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserService extends IService<User> {
 
-    boolean login(UserDTO user);
+    UserDTO login(UserDTO user);
+
+    User register(UserDTO userDTO);
 }
