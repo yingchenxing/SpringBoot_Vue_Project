@@ -1,5 +1,6 @@
 package com.example.managesystem.service;
 
+import com.example.managesystem.controller.dto.UserDTO;
 import com.example.managesystem.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserService extends IService<User> {
 
+    boolean login(UserDTO user);
 }
