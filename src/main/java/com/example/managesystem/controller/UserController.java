@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.managesystem.common.Constants;
 import com.example.managesystem.common.Result;
 import com.example.managesystem.controller.dto.UserDTO;
+import com.example.managesystem.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -65,8 +66,8 @@ public class UserController {
     }
 
     @PostMapping
-    public Boolean save(@RequestBody User user) {
-        return userService.saveOrUpdate(user);
+    public Result save(@RequestBody User user) {
+        return Result.success(userService.saveOrUpdate(user));
     }
 
     @DeleteMapping("/{id}")
@@ -111,6 +112,11 @@ public class UserController {
         if (!address.isEmpty())
             queryWrapper.like("address", address);
         queryWrapper.orderByDesc("id");
+
+        //获取当前用户
+        User currentUser = TokenUtils.getCurrentUser();
+        System.out.println(currentUser.getUsername());
+
         return userService.page(new Page<>(pageNum, pageSize), queryWrapper);
     }
 

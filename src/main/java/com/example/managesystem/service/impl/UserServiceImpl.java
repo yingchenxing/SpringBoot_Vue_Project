@@ -11,6 +11,7 @@ import com.example.managesystem.exception.ServiceException;
 import com.example.managesystem.mapper.UserMapper;
 import com.example.managesystem.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.managesystem.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         if (one != null) {
             BeanUtil.copyProperties(one, user, true);
+            String token = TokenUtils.getToken(one.getId().toString(),one.getPassword());
+            user.setToken(token);
             return user;
         } else {
             throw new ServiceException(Constants.CODE_600, "Incorrect username or password.");
@@ -67,6 +70,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new ServiceException(Constants.CODE_500,"Username has been used!");
         }
     }
+
+
 
 //    private User getUserInfo() {
 //
