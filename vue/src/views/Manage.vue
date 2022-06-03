@@ -7,13 +7,13 @@
 
     <el-container>
 
-      <el-header style="border-bottom: 1px solid #cccccc">
-          <Header :collapse-btn-class="collapseBtnClass" :collapse="isCollapse"/>
+      <el-header style="border-bottom: 1px solid #ccc;">
+        <Header :collapseBtnClass="collapseBtnClass" @asideCollapse="collapse" :user="user"/>
       </el-header>
 
       <el-main>
-<!--        表示当前页面的子路由会在router-view中展示-->
-       <router-view/>
+        <!--        表示当前页面的子路由会在router-view中展示-->
+        <router-view @refreshUser="getUser"/>
       </el-main>
     </el-container>
   </el-container>
@@ -33,6 +33,9 @@ export default {
     Aside,
     HelloWorld
   },
+  created() {
+    this.getUser();
+  },
   data() {
     return {
 
@@ -40,13 +43,9 @@ export default {
       collapseBtnClass: 'el-icon-s-fold',
       isCollapse: false,
       sideWidth: 200,
+      user: {}
     };
-
   },
-
-  component: [
-    Aside,Header
-  ],
   methods: {
     collapse() {
       this.isCollapse = !this.isCollapse;
@@ -58,12 +57,15 @@ export default {
         this.collapseBtnClass = 'el-icon-s-fold';
       }
     },
+    getUser() {
+      let username = localStorage.getItem("user")?JSON.parse(localStorage.getItem("user")).username : {};
+      this.request.get("/user/username/" + username).then(res => {
+        this.user = res.data
+      })
+    },
   }
 }
 </script>
 
-<style>
-.headerBg {
-  background-color: #eee !important;
-}
+<style scoped>
 </style>

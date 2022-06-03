@@ -30,3 +30,6 @@ build/
 ### VS Code ###
 .vscode/
 /vue/node_modules/
+/.idea/
+/.idea/
+/files/

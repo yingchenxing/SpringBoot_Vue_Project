@@ -11,7 +11,7 @@
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
       <el-form-item label="username">
-        <el-input v-model="form.username" autocomplete="off"></el-input>
+        <el-input v-model="form.username" disabled autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="nickname">
         <el-input v-model="form.nickname" autocomplete="off"></el-input>
@@ -43,7 +43,6 @@ export default {
   },
   created() {
     this.getUser().then(res => {
-      console.log(res)
       this.form = res
     })
   },
@@ -59,11 +58,11 @@ export default {
           // 触发父级更新User的方法
           this.$emit("refreshUser")
 
-          // 更新浏览器存储的用户信息
-          this.getUser().then(res => {
-            res.token = JSON.parse(localStorage.getItem("user")).token
-            localStorage.setItem("user", JSON.stringify(res))
-          })
+          // // 更新浏览器存储的用户信息
+          // this.getUser().then(res => {
+          //   res.token = JSON.parse(localStorage.getItem("user")).token
+          //   localStorage.setItem("user", JSON.stringify(res))
+          // })
 
         } else {
           this.$message.error("Fail to save!")

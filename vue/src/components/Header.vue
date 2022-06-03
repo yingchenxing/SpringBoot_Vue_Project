@@ -18,11 +18,11 @@
         <i class="el-icon-arrow-down" style="margin-left: 5px"></i>
       </div>
       <el-dropdown-menu slot="dropdown" style="width: 100px;text-align:center">
-        <router-link to="/profile" style="text-decoration: none;" >
-        <el-dropdown-item style="font-size:14px;padding:5px 0">
-          <i class="el-icon-s-custom"></i>
-          Profile
-        </el-dropdown-item>
+        <router-link to="/profile" style="text-decoration: none;">
+          <el-dropdown-item style="font-size:14px;padding:5px 0">
+            <i class="el-icon-s-custom"></i>
+            Profile
+          </el-dropdown-item>
         </router-link>
         <span style="text-decoration: none" @click="logOut">
           <el-dropdown-item style="font-size:14px;padding:5px 0">
@@ -39,21 +39,19 @@ export default {
   name: "Header",
   props: {
     collapseBtnClass: String,
-    Collapse: Boolean,
+    user: Object,
   },
   computed: {
     currentPathName() {
       return this.$store.state.currentPathName;
     }
   },
-  // watch: {
-  //   currentPathName(newVal, oldVal) {
-  //     console.log(newVal)
-  //   }
+  // created() {
+  //   console.log(this.user)
   // },
   data() {
     return {
-      user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+      // user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
     }
   },
   methods: {
