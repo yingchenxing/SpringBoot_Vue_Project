@@ -11,12 +11,12 @@
       <img src="../assets/logo.png" alt="" style="width: 20px;position: relative;top:5px;margin-left: 5px">
       <b style="color: white" v-show="!isCollapse">Management System</b>
     </div>
-    <el-submenu index="/">
+    <el-menu-item index="/">
       <template slot="title">
         <i class="el-icon-house"></i>
         <span slot="title">Home</span>
       </template>
-    </el-submenu>
+    </el-menu-item>
 
     <el-submenu index="">
       <template slot="title">

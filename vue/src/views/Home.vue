@@ -1,12 +1,135 @@
 <template>
   <div>
-    <h1>这是主页</h1>
+    <el-row :gutter="10" style="margin-bottom: 40px">
+      <el-col :span="6">
+        <el-card style="color: #409EFF">
+          <div><i class="el-icon-user-solid"/>Total number of users</div>
+          <div style="padding: 10px 0;text-align: center;font-weight: bold">
+            100
+          </div>
+        </el-card>
+      </el-col>
+
+      <el-col :span="6">
+        <el-card style="color: #F56C6C">
+          <div ><i class="el-icon-money"/>Total sales</div>
+          <div style="padding: 10px 0;text-align: center;font-weight: bold">100</div>
+        </el-card>
+      </el-col>
+
+      <el-col :span="6">
+        <el-card style="color: #67C23A">
+          <div><i class="el-icon-bank-card"/>Income</div>
+          <div style="padding: 10px 0;text-align: center;font-weight: bold">$1000000</div>
+        </el-card>
+      </el-col>
+
+      <el-col :span="6">
+        <el-card style="color: #E6A23C">
+          <div><i class="el-icon-s-shop"/>Number of stores</div>
+          <div style="padding: 10px 0;text-align: center;font-weight: bold">$100000</div>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <div id="main" style="width: 500px; height:400px"></div>
+      </el-col>
+      <el-col :span="12">
+        <div id="pie" style="width: 500px; height:400px"></div>
+      </el-col>
+    </el-row>
+
   </div>
 </template>
 
 <script>
+import * as echarts from 'echarts';
+
 export default {
-  name: "Home"
+  name: "Home",
+  data() {
+    return {}
+  },
+  mounted() {//trigger after render
+
+    var option = {
+      title: {
+        text: 'Members of each season',
+        subtext: 'Trend Chart',
+        left: 'center'
+      },
+      xAxis: {
+        type: 'category',
+        data: ['Season one', 'Season two', 'Season three', 'Season four']
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: [],
+          type: 'line'
+        },
+        {
+          data: [],
+          type: 'bar',
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180, 180, 180, 0.2)'
+          }
+        }
+      ]
+    };
+
+    var pieOption = {
+      title: {
+        text: 'Members of each season',
+        subtext: 'Scale Chart',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left'
+      },
+      series: [
+        {
+          type: 'pie',
+          radius: '50%',
+          data: [],
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    };
+
+    var chartDom = document.getElementById('main');
+    var myChart = echarts.init(chartDom);
+    var pieDom = document.getElementById('pie');
+    var pieChart = echarts.init(pieDom);
+
+    this.request.get("/charts/members").then(res => {
+      option.series[0].data = res.data
+      option.series[1].data = res.data
+      myChart.setOption(option);
+
+      pieOption.series[0].data=[
+        {name:'Season One', value: res.data[0]},
+        {name:'Season Two', value: res.data[1]},
+        {name:'Season Three', value: res.data[2]},
+        {name:'Season Four', value: res.data[3]},
+      ]
+      pieChart.setOption(pieOption);
+    })
+  }
 }
 </script>
 

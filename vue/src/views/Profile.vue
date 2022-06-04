@@ -23,10 +23,10 @@
         <el-input v-model="form.phone" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="address">
-        <el-input v-model="form.address" autocomplete="off"></el-input>
+        <el-input type="textarea" v-model="form.address" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="save">Save</el-button>
+        <el-button  @click="save">Save</el-button>
       </el-form-item>
     </el-form>
   </el-card>
