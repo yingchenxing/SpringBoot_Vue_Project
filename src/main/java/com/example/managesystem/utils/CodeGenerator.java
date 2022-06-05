@@ -20,7 +20,7 @@ public class CodeGenerator {
                 .globalConfig(builder -> {
                     builder.author("YingChenxing") // 设置作者
                             .enableSwagger() // 开启 swagger 模式
-                            .fileOverride() // 覆盖已生成文件
+//                            .fileOverride() // 覆盖已生成文件
                             .outputDir("C:\\Users\\96392\\Desktop\\Code\\ManageSystem\\src\\main\\java\\"); // 指定输出目录
                 })
                 .packageConfig(builder -> {
@@ -31,7 +31,7 @@ public class CodeGenerator {
                 .strategyConfig(builder -> {
                     builder.entityBuilder().enableLombok();
                     builder.controllerBuilder().enableHyphenStyle().enableRestStyle();
-                    builder.addInclude("sys_user") // 设置需要生成的表名
+                    builder.addInclude("sys_role") // 设置需要生成的表名
                             .addTablePrefix("t_", "sys_"); // 设置过滤表前缀
                 })
 //                .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

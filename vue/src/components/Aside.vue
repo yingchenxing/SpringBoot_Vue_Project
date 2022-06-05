@@ -30,6 +30,13 @@
         </template>
       </el-menu-item>
 
+      <el-menu-item index="/role">
+        <template slot="title">
+          <i class="el-icon-s-custom"></i>
+          <span slot="title">Role Data</span>
+        </template>
+      </el-menu-item>
+
       <el-menu-item index="/file">
         <template slot="title">
           <i class="el-icon-document"></i>

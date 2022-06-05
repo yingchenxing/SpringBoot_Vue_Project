@@ -12,7 +12,7 @@
 
       <el-col :span="6">
         <el-card style="color: #F56C6C">
-          <div ><i class="el-icon-money"/>Total sales</div>
+          <div><i class="el-icon-money"/>Total sales</div>
           <div style="padding: 10px 0;text-align: center;font-weight: bold">100</div>
         </el-card>
       </el-col>
@@ -59,6 +59,9 @@ export default {
         subtext: 'Trend Chart',
         left: 'center'
       },
+      tooltip: {
+        trigger: 'item'
+      },
       xAxis: {
         type: 'category',
         data: ['Season one', 'Season two', 'Season three', 'Season four']
@@ -68,16 +71,24 @@ export default {
       },
       series: [
         {
+          name: "Starbucks",
+          data: [],
+          type: 'bar'
+        },
+        {
+          name: "Starbucks",
           data: [],
           type: 'line'
         },
         {
+          name: "Luckin Coffee",
           data: [],
-          type: 'bar',
-          showBackground: true,
-          backgroundStyle: {
-            color: 'rgba(180, 180, 180, 0.2)'
-          }
+          type: 'bar'
+        },
+        {
+          name: "Luckin Coffee",
+          data: [],
+          type: 'line'
         }
       ]
     };
@@ -89,7 +100,8 @@ export default {
         left: 'center'
       },
       tooltip: {
-        trigger: 'item'
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)'
       },
       legend: {
         orient: 'vertical',
@@ -97,9 +109,54 @@ export default {
       },
       series: [
         {
+          name: 'Starbucks',
           type: 'pie',
           radius: '50%',
+          center: ['25%', '50%'],
+          label: {            //饼图图形上的文本标签
+            normal: {
+              show: true,
+              position: 'inner', //标签的位置
+              textStyle: {
+                fontWeight: 300,
+                fontSize: 14,    //文字的字体大小
+                color: "#fff"
+              },
+              formatter: '{c}({d}%)'
+            }
+          },
           data: [],
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        },
+        {
+          name: 'Luckin Coffee',
+          type: 'pie',
+          radius: '50%',
+          center: ['75%', '50%'],
+          label: {            //饼图图形上的文本标签
+            normal: {
+              show: true,
+              position: 'inner', //标签的位置
+              textStyle: {
+                fontWeight: 300,
+                fontSize: 14,    //文字的字体大小
+                color: "#fff"
+              },
+              formatter: '{d}%'
+            }
+          },
+          data: [
+            {name: 'Season One', values: 1},
+            {name: 'Season Two', values: 2},
+            {name: 'Season Three', values: 3},
+            {name: 'Season Four', values: 4},
+          ],
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
@@ -121,11 +178,17 @@ export default {
       option.series[1].data = res.data
       myChart.setOption(option);
 
-      pieOption.series[0].data=[
-        {name:'Season One', value: res.data[0]},
-        {name:'Season Two', value: res.data[1]},
-        {name:'Season Three', value: res.data[2]},
-        {name:'Season Four', value: res.data[3]},
+      pieOption.series[0].data = [
+        {name: 'Season One', value: res.data[0]},
+        {name: 'Season Two', value: res.data[1]},
+        {name: 'Season Three', value: res.data[2]},
+        {name: 'Season Four', value: res.data[3]},
+      ]
+      pieOption.series[1].data = [
+        {name: 'Season One', value: res.data[0]},
+        {name: 'Season Two', value: res.data[1]},
+        {name: 'Season Three', value: res.data[2]},
+        {name: 'Season Four', value: res.data[3]},
       ]
       pieChart.setOption(pieOption);
     })
