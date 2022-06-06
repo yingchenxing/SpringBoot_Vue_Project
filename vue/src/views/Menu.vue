@@ -34,6 +34,7 @@
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="'headerBg'"
+              row-key="id" default-expand-all
               @selection-change="handleSelectChange">
       <el-table-column
           type="selection"
@@ -43,13 +44,15 @@
       </el-table-column>
       <el-table-column prop="name" label="Name" width="120">
       </el-table-column>
+      <el-table-column prop="path" label="Path" width="120">
+      </el-table-column>
+      <el-table-column prop="icon" label="Icon" width="120">
+      </el-table-column>
       <el-table-column prop="description" label="Description">
       </el-table-column>
       <el-table-column label="Operate" align="center">
         <template slot-scope="scope">
-
-          <el-button type="info" slot="reference" @click="selectMenu(scope.row.id)">Assign Menu<i
-              class="el-icon-menu"></i></el-button>
+          <el-button type="primary" v-if="!scope.row.pid&&!scope.row.path" @click="handleAdd(scope.row.id)">Add submenu<i class="el-icon-plus"></i></el-button>
           <el-button type="success" @click="handleEdit(scope.row)">Edit<i class="el-icon-edit"></i></el-button>
           <el-popconfirm
               class="ml-5"
@@ -77,10 +80,16 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="User's information" :visible.sync="dialogFormVisible" width="30%">
+    <el-dialog title="Menu information" :visible.sync="dialogFormVisible" width="30%">
       <el-form label-width="90px">
         <el-form-item label="Name">
           <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Path">
+          <el-input v-model="form.path" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Icon">
+          <el-input v-model="form.icon" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="Description">
           <el-input v-model="form.description" autocomplete="off"></el-input>
@@ -93,45 +102,26 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="Assign Menu" :visible.sync="menuDialogVisible" width="30%">
-      <el-tree
-          :props="props"
-          :data="menuData"
-          node-key="id"
-          :default-expanded-keys="[1,3]"
-          :default-checked-keys="[4]"
-          show-checkbox
-          @check-change="handleCheckChange">
-      </el-tree>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="save">Save</el-button>
-      </div>
-    </el-dialog>
-
   </div>
 </template>
 
 <script>
 export default {
-  name: "Role",
+  name: "Menu",
   data() {
     return {
       totalData: [],
-      props: {
-        label: "name",
-      },
       total: 0,
       pageNum: 0,
       pageSize: 10,
       name: "",
       description: "",
+      path: "",
+      icon: "",
       form: {},
       tableData: [],
       dialogFormVisible: false,
-      menuDialogVisible: false,
       multipleSection: [],
-      menuData: []
     }
   },
   created() {
@@ -139,18 +129,13 @@ export default {
   },
   methods: {
     load() {
-      this.request.get("/role/page", {
+      this.request.get("/menu", {
         params: {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
           name: this.name,
         }
       }).then(res => {
-        console.log(res)
-        this.tableData = res.data.records
-        this.total = res.data.total
+        this.tableData = res.data
       })
-
 
     },
     handleSizeChange(pageSize) {
@@ -166,12 +151,16 @@ export default {
       this.description = "";
       this.load();
     },
-    handleAdd() {
+
+    handleAdd(id) {
       this.dialogFormVisible = true
       this.form = {}
+      if(id){
+        this.form.pid=id;
+      }
     },
     save() {
-      this.request.post("/role", this.form).then(res => {
+      this.request.post("/menu", this.form).then(res => {
 
         if (res.code === '200') {
           this.$message.success("Save successfully!")
@@ -187,7 +176,7 @@ export default {
       this.dialogFormVisible = true
     },
     del(id) {
-      this.request.delete("/role/" + id).then(res => {
+      this.request.delete("/menu/" + id).then(res => {
         if (res.code === '200') {
           this.$message.success("Delete successfully!")
           this.load()
@@ -199,7 +188,7 @@ export default {
     delBatch() {
       let ids = this.multipleSection.map(v => v.id)
       console.log(ids)
-      this.request.post("/role/del/batch", ids).then(res => {
+      this.request.post("/menu/del/batch", ids).then(res => {
         if (res) {
           this.$message.success("Delete successfully!")
           this.load()
@@ -211,16 +200,12 @@ export default {
     handleSelectChange(val) {
       this.multipleSection = val
     },
-    handleCheckChange(data, checked, indeterminate) {
-      console.log(data, checked, indeterminate);
+    exp() {
+      window.open("http://localhost:9090/menu/export")
     },
-    selectMenu(roleId) {
-      this.menuDialogVisible = true;
-
-      this.request.get("/menu").then(res => {
-        this.menuData = res.data
-        this.total = res.data.total
-      })
+    handleExcelImportSuccess() {
+      this.$message.success("Successfully import!")
+      this.load()
     }
   }
 }

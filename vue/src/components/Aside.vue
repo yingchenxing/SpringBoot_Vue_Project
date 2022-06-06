@@ -37,6 +37,11 @@
         </template>
       </el-menu-item>
 
+      <el-menu-item index="/menu">
+          <i class="el-icon-s-custom"></i>
+          <span slot="title">Menu Data</span>
+      </el-menu-item>
+
       <el-menu-item index="/file">
         <template slot="title">
           <i class="el-icon-document"></i>
