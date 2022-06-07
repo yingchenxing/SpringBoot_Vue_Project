@@ -9,7 +9,7 @@
     </div>
 
     <div style="padding: 10px 0">
-      <el-button type="primary" @click="handleAdd">Add<i class="el-icon-circle-plus-outline"></i></el-button>
+      <el-button type="primary" @click="handleAdd(null)">Add<i class="el-icon-circle-plus-outline"></i></el-button>
 
       <el-popconfirm
           class="ml-5"
@@ -89,7 +89,9 @@
           <el-input v-model="form.path" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="Icon">
-          <el-input v-model="form.icon" autocomplete="off"></el-input>
+          <el-select clearable v-model="form.icon" placeholder="Please select" style="width:80%">
+            <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.name"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="Description">
           <el-input v-model="form.description" autocomplete="off"></el-input>
@@ -118,10 +120,13 @@ export default {
       description: "",
       path: "",
       icon: "",
+      pid:"",
       form: {},
       tableData: [],
       dialogFormVisible: false,
       multipleSection: [],
+      options:[],
+
     }
   },
   created() {
@@ -135,6 +140,7 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data
+
       })
 
     },
@@ -172,8 +178,13 @@ export default {
       })
     },
     handleEdit(row) {
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.dialogFormVisible = true
+
+      this.request.get("/menu/icons").then(res => {
+        this.options = res.data
+
+      })
     },
     del(id) {
       this.request.delete("/menu/" + id).then(res => {
