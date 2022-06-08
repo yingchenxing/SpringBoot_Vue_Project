@@ -23,14 +23,13 @@
         <el-button type="danger" slot="reference">Delete<i class="el-icon-remove-outline"></i></el-button>
       </el-popconfirm>
 
-
-      <el-upload
-          action="http://localhost:9090/user/import" style="display: inline-block" :show-file-list="false"
-          accept="xlsx" :on-success="handleExcelImportSuccess"
-      >
-        <el-button type="primary" class="ml-5">Import<i class="el-icon-bottom"></i></el-button>
-      </el-upload>
-      <el-button type="primary" @click="exp" class="ml-5">Export<i class="el-icon-top"></i></el-button>
+<!--      <el-upload-->
+<!--          action="http://localhost:9090/user/import" style="display: inline-block" :show-file-list="false"-->
+<!--          accept="xlsx" :on-success="handleExcelImportSuccess"-->
+<!--      >-->
+<!--        <el-button type="primary" class="ml-5">Import<i class="el-icon-bottom"></i></el-button>-->
+<!--      </el-upload>-->
+<!--      <el-button type="primary" @click="exp" class="ml-5">Export<i class="el-icon-top"></i></el-button>-->
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="'headerBg'"
@@ -46,7 +45,10 @@
       </el-table-column>
       <el-table-column prop="path" label="Path" width="120">
       </el-table-column>
-      <el-table-column prop="icon" label="Icon" width="120">
+      <el-table-column label="Icon" width="120" class-name="fontSize18" align="center" label-class-name="fontSize12">
+        <template slot-scope="scope" >
+          <i :class="scope.row.icon" />
+        </template>
       </el-table-column>
       <el-table-column prop="description" label="Description">
       </el-table-column>
@@ -90,7 +92,9 @@
         </el-form-item>
         <el-form-item label="Icon">
           <el-select clearable v-model="form.icon" placeholder="Please select" style="width:80%">
-            <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.name"></el-option>
+            <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.value">
+              <i :class="item.value"/>{{ " "+item.name }}
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="Description">
@@ -223,5 +227,13 @@ export default {
 </script>
 
 <style scoped>
-
+.headerBg {
+  background: #eee!important;
+}
+.fontSize18{
+  font-size: 18px;
+}
+.fontSize12{
+  font-size: 12px;
+}
 </style>

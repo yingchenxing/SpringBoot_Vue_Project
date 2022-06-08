@@ -24,13 +24,13 @@
       </el-popconfirm>
 
 
-      <el-upload
-          action="http://localhost:9090/user/import" style="display: inline-block" :show-file-list="false"
-          accept="xlsx" :on-success="handleExcelImportSuccess"
-      >
-        <el-button type="primary" class="ml-5">Import<i class="el-icon-bottom"></i></el-button>
-      </el-upload>
-      <el-button type="primary" @click="exp" class="ml-5">Export<i class="el-icon-top"></i></el-button>
+<!--      <el-upload-->
+<!--          action="http://localhost:9090/user/import" style="display: inline-block" :show-file-list="false"-->
+<!--          accept="xlsx" :on-success="handleExcelImportSuccess"-->
+<!--      >-->
+<!--        <el-button type="primary" class="ml-5">Import<i class="el-icon-bottom"></i></el-button>-->
+<!--      </el-upload>-->
+<!--      <el-button type="primary" @click="exp" class="ml-5">Export<i class="el-icon-top"></i></el-button>-->
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="'headerBg'"
@@ -98,14 +98,17 @@
           :props="props"
           :data="menuData"
           node-key="id"
-          :default-expanded-keys="[1,3]"
-          :default-checked-keys="[4]"
-          show-checkbox
-          @check-change="handleCheckChange">
+          ref="tree"
+          :default-expanded-keys="expands"
+          :default-checked-keys="checks"
+          show-checkbox>
+        <span class="custom-tree-node" slot-scope="{ node, data}">
+          <span><i :class="data.icon"></i>{{" "+data.name}}</span>
+        </span>
       </el-tree>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="save">Save</el-button>
+        <el-button @click="menuDialogVisible=false">Cancel</el-button>
+        <el-button type="primary" @click="saveRoleMenu">Save</el-button>
       </div>
     </el-dialog>
 
@@ -131,7 +134,10 @@ export default {
       dialogFormVisible: false,
       menuDialogVisible: false,
       multipleSection: [],
-      menuData: []
+      menuData: [],
+      expands: [],
+      checks:[],
+      roleId:0
     }
   },
   created() {
@@ -211,15 +217,27 @@ export default {
     handleSelectChange(val) {
       this.multipleSection = val
     },
-    handleCheckChange(data, checked, indeterminate) {
-      console.log(data, checked, indeterminate);
-    },
     selectMenu(roleId) {
       this.menuDialogVisible = true;
-
+      this.roleId=roleId;
       this.request.get("/menu").then(res => {
         this.menuData = res.data
-        this.total = res.data.total
+        //把后台返回的惨淡数据处理成id数组
+        this.expands= this.menuData.map(v=>v.id);
+      })
+
+      this.request.get("/role/roleMenu/"+roleId).then(res => {
+        this.checks = res.data;
+      })
+    },
+    saveRoleMenu(){
+      this.request.post("role/roleMenu/"+this.roleId,this.$refs.tree.getCheckedKeys()).then(res=>{
+        if(res.code==='200'){
+          this.$message.success("Bind successfully!")
+          this.menuDialogVisible=false
+        }else{
+          this.$message.error(res.msg)
+        }
       })
     }
   }
