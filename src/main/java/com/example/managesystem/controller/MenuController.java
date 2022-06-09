@@ -57,16 +57,9 @@ public class MenuController {
 
     @GetMapping
     public Result findAll(@RequestParam(defaultValue = "") String name) {
-        QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("id");
-        queryWrapper.like("name", name);
-        List<Menu> list = menuService.list();
-        //parent node
-        List<Menu> parentNode = list.stream().filter(menu -> menu.getPid() == null).collect(Collectors.toList());
-        for (Menu menu : parentNode) {
-            menu.setChildren(list.stream().filter(m -> menu.getId().equals(m.getPid())).collect((Collectors.toList())));
-        }
-        return Result.success(parentNode);
+
+
+        return Result.success(menuService.findMenus(name));
     }
 
     @GetMapping("/{id}")

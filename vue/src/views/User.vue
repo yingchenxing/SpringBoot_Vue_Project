@@ -15,17 +15,17 @@
     <div style="padding: 10px 0">
       <el-button type="primary" @click="handleAdd">Add<i class="el-icon-circle-plus-outline"></i></el-button>
 
-        <el-popconfirm
-            class="ml-5"
-            confirm-button-text='Yes'
-            cancel-button-text='No'
-            icon="el-icon-info"
-            icon-color="red"
-            title="Are you sure to remove the users selected?"
-            @confirm="delBatch"
-        >
-          <el-button type="danger" slot="reference">Delete<i class="el-icon-remove-outline"></i></el-button>
-        </el-popconfirm>
+      <el-popconfirm
+          class="ml-5"
+          confirm-button-text='Yes'
+          cancel-button-text='No'
+          icon="el-icon-info"
+          icon-color="red"
+          title="Are you sure to remove the users selected?"
+          @confirm="delBatch"
+      >
+        <el-button type="danger" slot="reference">Delete<i class="el-icon-remove-outline"></i></el-button>
+      </el-popconfirm>
 
 
       <el-upload
@@ -41,7 +41,7 @@
               @selection-change="handleSelectChange">
       <el-table-column
           type="selection"
-          width="55">
+          width="50">
       </el-table-column>
       <el-table-column prop="id" label="ID" width="140">
       </el-table-column>
@@ -54,6 +54,8 @@
       <el-table-column prop="phone" label="phone">
       </el-table-column>
       <el-table-column prop="address" label="address">
+      </el-table-column>
+      <el-table-column prop="role" label="role">
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
@@ -88,6 +90,11 @@
       <el-form label-width="80px">
         <el-form-item label="username">
           <el-input v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="role">
+          <el-select clearable v-model="form.role" placeholder="Please select role" style="width: 80%">
+            <el-option v-for="item in roles" :key="item.name" :label="item.name" :value="item.flag"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="nickname">
           <el-input v-model="form.nickname" autocomplete="off"></el-input>
@@ -129,6 +136,7 @@ export default {
       tableData: [],
       dialogFormVisible: false,
       multipleSection: [],
+      roles: []
     }
   },
   created() {
@@ -150,6 +158,9 @@ export default {
         this.total = res.total
       })
 
+      this.request.get("/role").then(res => {
+        this.roles = res.data
+      })
     },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
@@ -172,7 +183,7 @@ export default {
     save() {
       this.request.post("/user", this.form).then(res => {
 
-        if (res.code==='200') {
+        if (res.code === '200') {
           this.$message.success("Save successfully!")
           this.dialogFormVisible = false
           this.load()
@@ -213,7 +224,7 @@ export default {
     exp() {
       window.open("http://localhost:9090/user/export")
     },
-    handleExcelImportSuccess(){
+    handleExcelImportSuccess() {
       this.$message.success("Successfully import!")
       this.load()
     }

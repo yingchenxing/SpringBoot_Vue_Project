@@ -49,6 +49,7 @@ export default {
               this.$message.error(res.msg)
             } else {
               localStorage.setItem("user",JSON.stringify(res.data))
+              localStorage.setItem("menus",JSON.stringify(res.data.menus ))
               this.$router.push("/");
               this.$message.success("Login successfully!")
             }
