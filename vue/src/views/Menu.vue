@@ -39,11 +39,13 @@
           type="selection"
           width="55">
       </el-table-column>
-      <el-table-column prop="id" label="ID" width="140">
+      <el-table-column prop="id" label="ID" width="80">
       </el-table-column>
-      <el-table-column prop="name" label="Name" width="120">
+      <el-table-column prop="name" label="Name" >
       </el-table-column>
-      <el-table-column prop="path" label="Path" width="120">
+      <el-table-column prop="path" label="Path" >
+      </el-table-column>
+      <el-table-column prop="pagePath" label="PagePath" >
       </el-table-column>
       <el-table-column label="Icon" width="120" class-name="fontSize18" align="center" label-class-name="fontSize12">
         <template slot-scope="scope" >
@@ -89,6 +91,9 @@
         </el-form-item>
         <el-form-item label="Path">
           <el-input v-model="form.path" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="PagePath">
+          <el-input v-model="form.pagePath" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="Icon">
           <el-select clearable v-model="form.icon" placeholder="Please select" style="width:80%">

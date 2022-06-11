@@ -160,6 +160,7 @@ export default {
 
       this.request.get("/role").then(res => {
         this.roles = res.data
+        console.log(this.roles)
       })
     },
     handleSizeChange(pageSize) {

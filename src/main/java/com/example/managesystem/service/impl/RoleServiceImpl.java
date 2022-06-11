@@ -1,10 +1,12 @@
 package com.example.managesystem.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.managesystem.entity.Menu;
 import com.example.managesystem.entity.Role;
 import com.example.managesystem.entity.RoleMenu;
 import com.example.managesystem.mapper.RoleMapper;
 import com.example.managesystem.mapper.RoleMenuMapper;
+import com.example.managesystem.service.IMenuService;
 import com.example.managesystem.service.IRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -28,12 +30,23 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     @Resource
     private RoleMenuMapper roleMenuMapper;
 
+    @Resource
+    private IMenuService menuService;
+
     @Override
     @Transactional
     public void setRoleMenu(Integer roleId, List<Integer> menuIds) {
 
         roleMenuMapper.deleteByRoleId(roleId);
         for(Integer menuId:menuIds){
+            Menu menu = menuService.getById(menuId);
+            if(menu.getPid()!=null && !menuIds.contains(menu.getPid())){
+                RoleMenu roleMenu = new RoleMenu();
+                roleMenu.setRoleId(roleId);
+                roleMenu.setMenuId(menu.getPid());
+                roleMenuMapper.insert(roleMenu);
+            }
+
             RoleMenu roleMenu = new RoleMenu();
             roleMenu.setRoleId(roleId);
             roleMenu.setMenuId(menuId);
