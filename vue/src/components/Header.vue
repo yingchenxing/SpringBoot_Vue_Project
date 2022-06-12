@@ -24,7 +24,7 @@
             Profile
           </el-dropdown-item>
         </router-link>
-        <span style="text-decoration: none" @click="logOut">
+        <span style="text-decoration: none" @click="logout">
           <el-dropdown-item style="font-size:14px;padding:5px 0">
               Log out
           </el-dropdown-item>
@@ -58,7 +58,8 @@ export default {
     collapse() {
       this.$emit("asideCollapse")
     },
-    logOut() {
+    logout() {
+      this.$store.commit("logout")
       this.$router.push("/login")
       localStorage.removeItem("user")
       this.$message.success("Successfully log out.")

@@ -1,5 +1,6 @@
 package com.example.managesystem.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.managesystem.entity.Menu;
 import com.example.managesystem.entity.Role;
@@ -38,13 +39,16 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     public void setRoleMenu(Integer roleId, List<Integer> menuIds) {
 
         roleMenuMapper.deleteByRoleId(roleId);
+
+        List<Integer> menuIdsCopy = CollUtil.newArrayList(menuIds);
         for(Integer menuId:menuIds){
             Menu menu = menuService.getById(menuId);
-            if(menu.getPid()!=null && !menuIds.contains(menu.getPid())){
+            if(menu.getPid()!=null && !menuIdsCopy.contains(menu.getPid())){
                 RoleMenu roleMenu = new RoleMenu();
                 roleMenu.setRoleId(roleId);
                 roleMenu.setMenuId(menu.getPid());
                 roleMenuMapper.insert(roleMenu);
+                menuIdsCopy.add(menu.getPid());
             }
 
             RoleMenu roleMenu = new RoleMenu();

@@ -12,9 +12,12 @@
                     v-model="user.password"></el-input>
         </el-form-item>
         <div style="margin:10px 0;text-align:right">
+
+          <el-button type="warning" size="small" v-model=this.user.password autocomplete="off"
+                     @click="$router.push('/register')">Register
+          </el-button>
           <el-button type="primary" size="small" v-model=this.user.username autocomplete="off" @click="login">Login
           </el-button>
-          <el-button type="warning" size="small" v-model=this.user.password autocomplete="off" @click="$router.push('/register')">Register</el-button>
         </div>
       </el-form>
     </div>
@@ -50,8 +53,8 @@ export default {
 
               this.$message.error(res.msg)
             } else {
-              localStorage.setItem("user",JSON.stringify(res.data))
-              localStorage.setItem("menus",JSON.stringify(res.data.menus ))
+              localStorage.setItem("user", JSON.stringify(res.data))
+              localStorage.setItem("menus", JSON.stringify(res.data.menus))
 
               setRoutes()
               this.$router.push("/");

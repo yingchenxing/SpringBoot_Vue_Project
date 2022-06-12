@@ -9,6 +9,8 @@ import com.example.managesystem.mapper.DictMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,10 +57,13 @@ public class MenuController {
         return Result.success();
     }
 
+    @GetMapping("/ids")
+    public Result findAllIds() {
+        return Result.success(menuService.list().stream().map(Menu::getId));
+    }
+
     @GetMapping
     public Result findAll(@RequestParam(defaultValue = "") String name) {
-
-
         return Result.success(menuService.findMenus(name));
     }
 

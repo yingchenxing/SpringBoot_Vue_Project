@@ -24,13 +24,13 @@
       </el-popconfirm>
 
 
-<!--      <el-upload-->
-<!--          action="http://localhost:9090/user/import" style="display: inline-block" :show-file-list="false"-->
-<!--          accept="xlsx" :on-success="handleExcelImportSuccess"-->
-<!--      >-->
-<!--        <el-button type="primary" class="ml-5">Import<i class="el-icon-bottom"></i></el-button>-->
-<!--      </el-upload>-->
-<!--      <el-button type="primary" @click="exp" class="ml-5">Export<i class="el-icon-top"></i></el-button>-->
+      <!--      <el-upload-->
+      <!--          action="http://localhost:9090/user/import" style="display: inline-block" :show-file-list="false"-->
+      <!--          accept="xlsx" :on-success="handleExcelImportSuccess"-->
+      <!--      >-->
+      <!--        <el-button type="primary" class="ml-5">Import<i class="el-icon-bottom"></i></el-button>-->
+      <!--      </el-upload>-->
+      <!--      <el-button type="primary" @click="exp" class="ml-5">Export<i class="el-icon-top"></i></el-button>-->
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="'headerBg'"
@@ -48,7 +48,7 @@
       <el-table-column label="Operate" align="center">
         <template slot-scope="scope">
 
-          <el-button type="info" slot="reference" @click="selectMenu(scope.row.id)">Assign Menu<i
+          <el-button type="info" @click="selectMenu(scope.row)">Assign Menu<i
               class="el-icon-menu"></i></el-button>
           <el-button type="success" @click="handleEdit(scope.row)">Edit<i class="el-icon-edit"></i></el-button>
           <el-popconfirm
@@ -93,21 +93,22 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="Assign Menu" :visible.sync="menuDialogVisible" width="30%">
+    <el-dialog title="Menu Right" :visible.sync="menuDialogVisible" width="30%">
       <el-tree
           :props="props"
           :data="menuData"
+          show-checkbox
           node-key="id"
           ref="tree"
-          :default-expanded-keys="expands"
+          :default-expanded-keys="expends"
           :default-checked-keys="checks"
-          show-checkbox>
-        <span class="custom-tree-node" slot-scope="{ node, data}">
-          <span><i :class="data.icon"></i>{{" "+data.name}}</span>
-        </span>
+      >
+         <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span><i :class="data.icon"></i> {{ data.name }}</span>
+         </span>
       </el-tree>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="menuDialogVisible=false">Cancel</el-button>
+        <el-button @click="menuDialogVisible = false">Cancel</el-button>
         <el-button type="primary" @click="saveRoleMenu">Save</el-button>
       </div>
     </el-dialog>
@@ -135,9 +136,11 @@ export default {
       menuDialogVisible: false,
       multipleSection: [],
       menuData: [],
-      expands: [],
-      checks:[],
-      roleId:0
+      expends: [],
+      checks: [],
+      roleId: 0,
+      roleFlag: '',
+      ids: []
     }
   },
   created() {
@@ -157,7 +160,9 @@ export default {
         this.total = res.data.total
       })
 
-
+      this.request.get("/menu/ids").then(r => {
+        this.ids = r.data
+      })
     },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
@@ -217,25 +222,42 @@ export default {
     handleSelectChange(val) {
       this.multipleSection = val
     },
-    selectMenu(roleId) {
-      this.menuDialogVisible = true;
-      this.roleId=roleId;
+    async selectMenu(role) {
+      this.roleId = role.id;
+      this.roleFlag = role.flag;
       this.request.get("/menu").then(res => {
         this.menuData = res.data
         //把后台返回的惨淡数据处理成id数组
-        this.expands= this.menuData.map(v=>v.id);
+        this.expends = this.menuData.map(v => v.id);
       })
 
-      this.request.get("/role/roleMenu/"+roleId).then(res => {
-        this.checks = res.data;
+      this.request.get("/role/roleMenu/" + this.roleId).then(res => {
+        this.checks = res.data
+
+        console.log(this.checks)
+        this.ids.forEach(id => {
+          if (!this.checks.includes(id)) {
+            // 可能会报错：Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'setChecked')
+            this.$nextTick(() => {
+              this.$refs.tree.setChecked(id, false,false)
+              console.log(id)
+            })
+          }
+          this.menuDialogVisible = true
+        })
       })
+
     },
-    saveRoleMenu(){
-      this.request.post("role/roleMenu/"+this.roleId,this.$refs.tree.getCheckedKeys()).then(res=>{
-        if(res.code==='200'){
+    saveRoleMenu() {
+      this.request.post("role/roleMenu/" + this.roleId, this.$refs.tree.getCheckedKeys()).then(res => {
+        if (res.code === '200') {
           this.$message.success("Bind successfully!")
-          this.menuDialogVisible=false
-        }else{
+          this.menuDialogVisible = false
+          if (this.roleFlag === 'ROLE_ADMIN') {
+            this.$store.commit("logout")
+          }
+
+        } else {
           this.$message.error(res.msg)
         }
       })

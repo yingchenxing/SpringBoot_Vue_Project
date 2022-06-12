@@ -90,13 +90,23 @@ export const setRoutes = () => {
 // })
 
 
-
 setRoutes()
 
 router.beforeEach((to, from, next) => {
     localStorage.setItem("currentPathName", to.name)//设置当前的路由名称，为了在Header组件中去使用
     store.commit("setPath")//除法store的数据跟新
-    next()//放行路由
+
+
+    if (!to.matched.length) {
+        const storeMenus = localStorage.getItem("menus")
+        if (storeMenus) {
+            next("/404")
+        } else {
+            next("/login")
+        }
+    }
+    next()
+
 })
 
 export default router
